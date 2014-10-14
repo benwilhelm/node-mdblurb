@@ -5,6 +5,16 @@ var markdown = require('markdown').markdown
 var blurbSchema = new mongoose.Schema({
     text: {
         type: String
+    },
+    
+    path: {
+        type: String,
+        required: true
+    },
+    
+    hash: {
+        type: String,
+        required:true
     }
 });
 
@@ -15,6 +25,11 @@ blurbSchema
     return markdown.toHTML(this.text);
 })
 
+blurbSchema
+.virtual('pathWithHash')
+.get(function(){
+    return this.path + '#' + this.hash;
+})
 
 blurbSchema.pre('save', function(next){
     if (!this.text) {
