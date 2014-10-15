@@ -2,6 +2,10 @@ var markdown = require('markdown').markdown
   , mongoose = require('mongoose')
   ;
   
+/******************
+ * Model Properties
+ *******************/
+
 var blurbSchema = new mongoose.Schema({
     text: {
         type: String
@@ -9,15 +13,24 @@ var blurbSchema = new mongoose.Schema({
     
     path: {
         type: String,
-        required: true
+        required: true,
+        index: true
     },
     
     hash: {
         type: String,
         required:true
     }
+
+}, {
+    toObject: { virtuals: true },
+    toJSON:   { virtuals: true }
 });
 
+
+/******************
+ * Virtual Properties
+ *******************/
 
 blurbSchema
 .virtual('html')
@@ -31,6 +44,11 @@ blurbSchema
     return this.path + '#' + this.hash;
 })
 
+
+
+/******************
+ * Pre Middleware
+ *******************/
 blurbSchema.pre('save', function(next){
     if (!this.text) {
         this.text = '';

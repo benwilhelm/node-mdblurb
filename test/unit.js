@@ -1,8 +1,10 @@
 process.env.NODE_ENV = 'test';
 require('../Blurb');
 
-var mongoose = require('mongoose')
-  , Blurb = mongoose.model('Blurb')
+var async = require('async')
+  , fixtures = require('pow-mongoose-fixtures')
+  , mongoose = require('mongoose')
+  ,   Blurb = mongoose.model('Blurb')
   , should = require('should')
   ;
 
@@ -10,10 +12,21 @@ mongoose.connect('mongodb://localhost/mdblurb_test');
 
 describe("Blurb Model", function(){
     
-    before(function(done){
-        mongoose.connection.collections.blurbs.remove({}, done);
-    })
+    var suite = this;
     
+    before(function(done){
+        async.series([
+          function(cb) { mongoose.connection.collections.blurbs.remove({}, cb); },
+          function(cb) { fixtures.load('./_fixtures.js', mongoose.connection, cb); },
+          function(cb) {
+            Blurb.findOne(function(err, blurb) {
+              suite.blurb = blurb;
+              cb(err, blurb);
+            });
+          }
+        ], done);
+    })
+
     it("should require path", function(done){
         var blurb = new Blurb({
             hash: 'foo'
@@ -48,15 +61,29 @@ describe("Blurb Model", function(){
         });
     });
     
-
-
     it("should convert markdown to html with `html` virtual", function(done){
         var blurb = new Blurb({
-            text: "**this** is markdown",
+            text: "**this** is markdown\n\nparagraph two",
         });
-        blurb.html.should.eql("<p><strong>this</strong> is markdown</p>");
+        blurb.html.should.eql("<p><strong>this</strong> is markdown</p>\n\n<p>paragraph two</p>");
         done();
     });
+    
+    /**
+     * using the virtuals:true option for toJSON in the model causes
+     * the virtual properties to be persisted to the database. this
+     * test is to ensure that the virtuals continue to respond to changes
+     * in the properties they depend on
+     */
+    it("should return updated html with markdown change", function(done){
+        suite.blurb.text = "###new text###";
+        suite.blurb.html.should.eql('<h3>new text</h3>');
+        suite.blurb.save(function(err, blurb){
+            should(err).eql(null);
+            blurb.html.should.eql('<h3>new text</h3>');
+            done();
+        });
+    })
     
     it("should return <path>#<hash> with virtual property `pathWithHash`", function(done){
         var blurb = new Blurb({

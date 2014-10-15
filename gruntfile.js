@@ -23,7 +23,7 @@ module.exports = function(grunt) {
         },
         src: [
           'test/unit.js',
-          //'test/integration.js'
+          'test/integration.js'
         ]
       }
     },
