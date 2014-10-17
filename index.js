@@ -17,7 +17,10 @@ module.exports = {
         if (opts.auth)        config.auth = opts.auth
         if (opts.preSave)     config.preSave = opts.preSave
         if (opts.contentPath) config.contentPath = opts.contentPath
-        if (opts.connectionString) mongoose.connect(opts.connectionString);
+        
+        if (opts.connectionString && !mongoose.connection.readyState) {
+          mongoose.connect(opts.connectionString);
+        } 
         
         var authRespond = function(req, res, next) {
             if (!req.canEditBlurb) {
