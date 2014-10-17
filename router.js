@@ -1,6 +1,7 @@
 require('./Blurb.js');
 var config = require('./config')
   , express = require('express')
+  , methodOverride = require('method-override')
   , mongoose = require('mongoose')
   ,   Blurb = mongoose.model('Blurb')
   , router = express.Router()
@@ -26,6 +27,8 @@ var respondError = function(res, message, varName, st) {
   res.status(status);
   res.json(resp);
 }
+
+router.use(methodOverride());
 
 router.param('blurb_id', function(req, res, next, id){
   Blurb.findOne({_id: id}, function(err, blurb){
