@@ -11,7 +11,6 @@ var async = require('async')
   , theModule = require('../index')
   ;
 
-
 describe('Middleware', function(){
 
   var suite = this;
@@ -38,7 +37,7 @@ describe('Middleware', function(){
     request(app)
     .get('/bio')
     .end(function(err, res){
-      res.text.should.eql(testBlurb.rendered)
+      res.text.should.eql(testBlurb.render(true))
       done();
     });
   });
@@ -48,7 +47,8 @@ describe('Middleware', function(){
     var app = express();
     theModule.registerApp(app, {
       auth: function(req, res, next) {
-        res.status(401).end();
+        req.canEditBlurb = false
+        next();
       }
     });
 
@@ -63,7 +63,8 @@ describe('Middleware', function(){
     var app = express();
     theModule.registerApp(app, {
       auth: function(req, res, next) {
-        res.status(401).end();
+        req.canEditBlurb = false;
+        next();
       }
     });
 
@@ -78,7 +79,8 @@ describe('Middleware', function(){
     var app = express();
     theModule.registerApp(app, {
       auth: function(req, res, next) {
-        res.status(401).end();
+        req.canEditBlurb = false;
+        next();
       }
     });
 
@@ -93,7 +95,8 @@ describe('Middleware', function(){
     var app = express();
     theModule.registerApp(app, {
       auth: function(req, res, next) {
-        res.status(401).end();
+        req.canEditBlurb = false;
+        next();
       }
     });
 
@@ -101,6 +104,6 @@ describe('Middleware', function(){
     .get('/blurb/' + suite.blurb._id)
     .expect(200)
     .end(done);
-  })
+  });
 
 });

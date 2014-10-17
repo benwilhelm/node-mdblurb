@@ -113,5 +113,40 @@ describe('Routes', function(){
       })
     });
   });
+  
+  
+  it('GET associated page should render editing info if permitted', function(done){
+    var app = express();
+    theModule.registerApp(app, {
+      auth: function(req, res, next){ req.canEditBlurb = true; next();}
+    });
+    app.get('/bio', function(req, res){
+      res.send( res.locals.blurbs.biotext.rendered );
+    });
+    
+    request(app)
+    .get('/bio')
+    .end(function(err, res){
+      res.text.should.match(/\<span data-blurb=/);
+      done();
+    });
+  })
+
+  it('GET associated page should not render editing info if not permitted', function(done){
+    var app = express();
+    theModule.registerApp(app, {
+      auth: function(req, res, next){ req.canEditBlurb = false; next();}
+    });
+    app.get('/bio', function(req, res){
+      res.send( res.locals.blurbs.biotext.rendered );
+    });
+    
+    request(app)
+    .get('/bio')
+    .end(function(err, res){
+      res.text.should.not.match(/\<span data-blurb=/);
+      done();
+    });
+  })
 
 });

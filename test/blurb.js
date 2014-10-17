@@ -94,7 +94,7 @@ describe("Blurb Model", function(){
         done();
     })
 
-    it('should return wrapped markdown with virtual property `rendered`', function(done){
+    it('`render(true)` should return html with editing data', function(done){
         var blurb = new Blurb({
             text: 'foo',
             path: '/bar',
@@ -103,7 +103,22 @@ describe("Blurb Model", function(){
 
         blurb.save(function(err, blurb){
             var data_id = blurb._id.toString();
-            blurb.rendered.should.eql('<div id="bif" data-blurb="' + data_id + '"><p>foo</p></div>')
+            blurb.render(true).should.match(/\<span data-blurb/);
+            done();
+        })
+    })
+
+
+    it('`render(false)` should return html without editing data', function(done){
+        var blurb = new Blurb({
+            text: 'foo',
+            path: '/bar',
+            hash: 'bif'
+        });
+
+        blurb.save(function(err, blurb){
+            var data_id = blurb._id.toString();
+            blurb.render(false).should.eql("<p>foo</p>");
             done();
         })
     })

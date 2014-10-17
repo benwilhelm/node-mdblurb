@@ -44,24 +44,6 @@ blurbSchema
     return this.path + '#' + this.hash;
 })
 
-blurbSchema
-.virtual('rendered')
-.get(function(){
-    var ret = '<div id="';
-    ret += this.hash;
-    ret += '" ';
-
-    if (this._id) {
-        ret += 'data-blurb="' + this._id + '"';
-    }
-
-    ret += ">";
-    ret += this.html;
-    ret += "</div>";
-    return ret;
-})
-
-
 
 /******************
  * Pre Middleware
@@ -72,5 +54,24 @@ blurbSchema.pre('save', function(next){
     }
     next();
 });
+
+
+/******************
+ * Object Methods
+ *******************/
+blurbSchema.methods.render = function(canEdit){
+    var blurb = this;
+    var ret = blurb.html;
+    
+    if (canEdit) {
+        var data_blurb = blurb._id ? blurb._id.toString() : 'new';
+        ret += '<span data-blurb="' + blurb._id + '"></span>';
+    }
+    
+    return ret;
+}
+
+
+
 
 mongoose.model('Blurb', blurbSchema);

@@ -14,7 +14,25 @@ module.exports = {
         app.set('blurbConfig', config);
         opts = opts || {};
 
+        if (opts.auth)        config.auth = opts.auth
+        if (opts.preSave)     config.preSave = opts.preSave
+        if (opts.contentPath) config.contentPath = opts.contentPath
+        
+        var authRespond = function(req, res, next) {
+            if (req.hasOwnProperty('canEditBlurb') && !req.canEditBlurb) {
+                res.status(401).end();
+                return;
+            }
+            next();
+        }
+
+        // route middleware and router
+        app.post(config.contentPath, config.auth, authRespond);
+        app.put(config.contentPath + '/:blurb_id', config.auth, authRespond)
+        app.delete(config.contentPath + '/:blurb_id', config.auth, authRespond)
+
         // load blurbs to routes
+        app.use(config.auth);
         app.use(function(req, res, next){
           Blurb.find({path: req.url}, function(err, blurbs){
             if (err) {
@@ -24,20 +42,14 @@ module.exports = {
 
             res.locals.blurbs = res.locals.blurbs || {};
             blurbs.forEach(function(blurb){
+              blurb.rendered = blurb.render(req.canEditBlurb);
               res.locals.blurbs[blurb.hash] = blurb;
             })
             next();
           })
         });
 
-        if (opts.auth)        config.auth = opts.auth
-        if (opts.preSave)     config.preSave = opts.preSave
-        if (opts.contentPath) config.contentPath = opts.contentPath
 
-        // route middleware and router
-        app.post(config.contentPath, config.auth)
-        app.put(config.contentPath + '/:blurb_id', config.auth)
-        app.delete(config.contentPath + '/:blurb_id', config.auth)
         app.use(config.contentPath, router);
     },
     

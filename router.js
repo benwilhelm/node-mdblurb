@@ -88,6 +88,7 @@ router.delete('/:blurb_id', function(req, res){
     if (err) {
       console.error(err);
       respondError(res, "Error deleting blurb", 'blurb');
+      return;
     }
     respondNormal(res, null, 'blurb');
   });
