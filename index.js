@@ -20,7 +20,7 @@ module.exports = {
         if (opts.connectionString) mongoose.connect(opts.connectionString);
         
         var authRespond = function(req, res, next) {
-            if (req.hasOwnProperty('canEditBlurb') && !req.canEditBlurb) {
+            if (!req.canEditBlurb) {
                 res.status(401).end();
                 return;
             }
@@ -45,7 +45,7 @@ module.exports = {
             blurbs.forEach(function(blurb){
               blurb.rendered = blurb.render(req.canEditBlurb);
               res.locals.blurbs[blurb.hash] = blurb;
-              res.locals.canEditBlurb = req.canEditBlurb;
+              res.locals.canEditBlurb = req.canEditBlurb ;
             })
             next();
           })
