@@ -17,6 +17,7 @@ module.exports = {
         if (opts.auth)        config.auth = opts.auth
         if (opts.preSave)     config.preSave = opts.preSave
         if (opts.contentPath) config.contentPath = opts.contentPath
+        if (opts.connectionString) mongoose.connect(opts.connectionString);
         
         var authRespond = function(req, res, next) {
             if (req.hasOwnProperty('canEditBlurb') && !req.canEditBlurb) {
@@ -55,5 +56,7 @@ module.exports = {
     
     toHTML: function(md) {
         return markdown.toHTML(md);
-    }
+    },
+
+    Blurb: mongoose.model('Blurb')
 }
