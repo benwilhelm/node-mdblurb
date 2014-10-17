@@ -90,10 +90,21 @@ describe("Blurb Model", function(){
             path: '/about',
             hash: 'foo'
         });
-        blurb.save(function(err, blurb){
-            should(err).be.null;
-            blurb.pathWithHash.should.eql('/about#foo');
-            done();
+        blurb.pathWithHash.should.eql('/about#foo');
+        done();
+    })
+
+    it('should return wrapped markdown with virtual property `rendered`', function(done){
+        var blurb = new Blurb({
+            text: 'foo',
+            path: '/bar',
+            hash: 'bif'
         });
+
+        blurb.save(function(err, blurb){
+            var data_id = blurb._id.toString();
+            blurb.rendered.should.eql('<div id="bif" data-blurb="' + data_id + '"><p>foo</p></div>')
+            done();
+        })
     })
 })

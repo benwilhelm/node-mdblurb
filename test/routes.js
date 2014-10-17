@@ -2,11 +2,13 @@ process.env.NODE_ENV = 'test';
 require('../Blurb');
 var async = require('async')
   , app = require('./_test-server')
+  , express = require('express')
   , fixtures = require('pow-mongoose-fixtures')
   , mongoose = require('mongoose')
   ,   Blurb = mongoose.model('Blurb')
   , request = require('supertest')
   , should = require('should')
+  , theModule = require('../index')
   ;
 
 
@@ -19,7 +21,8 @@ describe('Routes', function(){
       function(cb) { mongoose.connection.collections.blurbs.remove({}, cb); },
       function(cb) { fixtures.load('./_fixtures.js', mongoose.connection, cb); },
       function(cb) {
-        Blurb.findOne(function(err, blurb) {
+        suite.fixtures = require('./_fixtures').Blurb;
+        Blurb.findOne({path:'/about'}, function(err, blurb) {
           suite.blurb = blurb;
           cb(err, blurb);
         });

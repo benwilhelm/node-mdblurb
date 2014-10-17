@@ -1,9 +1,10 @@
 require('./Blurb.js');
-var express = require('express')
-//  , methodOverride = require('method-override')
+var config = require('./config')
+  , express = require('express')
   , mongoose = require('mongoose')
   ,   Blurb = mongoose.model('Blurb')
   , router = express.Router()
+  , theModule = require('./index')
   ;
   
 var respondNormal = function(res, payload, varName) {
@@ -25,9 +26,6 @@ var respondError = function(res, message, varName, st) {
   res.status(status);
   res.json(resp);
 }
-
-
-//router.use(methodOverride('X-HTTP-Method-Override'));
 
 router.param('blurb_id', function(req, res, next, id){
   Blurb.findOne({_id: id}, function(err, blurb){

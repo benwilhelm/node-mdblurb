@@ -12,7 +12,13 @@ app.use(bodyParser.json());
 
 mod.registerApp(app);
 
-app.listen(3001);
+app.get('/about', function(req, res){ 
+	res.type('html').send("About Page").end(); 
+});
+
+app.get('/bio', function(req, res){ 
+	res.type('html').send(res.locals.blurbs.biotext.rendered).end(); 
+});
+
 
 module.exports = app;
-

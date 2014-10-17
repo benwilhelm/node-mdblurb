@@ -1,3 +1,5 @@
 module.exports = {
-  contentPath: '/blurb'
+    auth: function(req, res, next) { next(); },
+    preSave: function(next) { next(); },
+    contentPath: '/blurb'  
 }

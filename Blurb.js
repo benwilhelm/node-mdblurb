@@ -44,6 +44,23 @@ blurbSchema
     return this.path + '#' + this.hash;
 })
 
+blurbSchema
+.virtual('rendered')
+.get(function(){
+    var ret = '<div id="';
+    ret += this.hash;
+    ret += '" ';
+
+    if (this._id) {
+        ret += 'data-blurb="' + this._id + '"';
+    }
+
+    ret += ">";
+    ret += this.html;
+    ret += "</div>";
+    return ret;
+})
+
 
 
 /******************
