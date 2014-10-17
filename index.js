@@ -45,6 +45,7 @@ module.exports = {
             blurbs.forEach(function(blurb){
               blurb.rendered = blurb.render(req.canEditBlurb);
               res.locals.blurbs[blurb.hash] = blurb;
+              res.locals.canEditBlurb = req.canEditBlurb;
             })
             next();
           })
