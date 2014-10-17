@@ -1,4 +1,4 @@
-var markdown = require('markdown').markdown
+var markdown = require('marked')
   , mongoose = require('mongoose')
   ;
   
@@ -35,7 +35,7 @@ var blurbSchema = new mongoose.Schema({
 blurbSchema
 .virtual('html')
 .get(function(){
-    return markdown.toHTML(this.text);
+    return markdown(this.text);
 })
 
 blurbSchema

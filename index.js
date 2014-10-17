@@ -1,7 +1,7 @@
 require('./Blurb')
 var app = {}
   , config = require('./config')
-  , markdown = require('markdown').markdown
+  , markdown = require('marked')
   , mongoose = require('mongoose')
   ,   Blurb = mongoose.model('Blurb')
   , router = require('./router')
@@ -56,7 +56,7 @@ module.exports = {
     },
     
     toHTML: function(md) {
-        return markdown.toHTML(md);
+        return markdown(md);
     },
 
     Blurb: mongoose.model('Blurb')

@@ -65,7 +65,7 @@ describe("Blurb Model", function(){
         var blurb = new Blurb({
             text: "**this** is markdown\n\nparagraph two",
         });
-        blurb.html.should.eql("<p><strong>this</strong> is markdown</p>\n\n<p>paragraph two</p>");
+        blurb.html.should.eql("<p><strong>this</strong> is markdown</p>\n<p>paragraph two</p>\n");
         done();
     });
     
@@ -77,10 +77,10 @@ describe("Blurb Model", function(){
      */
     it("should return updated html with markdown change", function(done){
         suite.blurb.text = "###new text###";
-        suite.blurb.html.should.eql('<h3>new text</h3>');
+        suite.blurb.html.should.match(/<h3(.*)>new text<\/h3>/);
         suite.blurb.save(function(err, blurb){
             should(err).eql(null);
-            blurb.html.should.eql('<h3>new text</h3>');
+            blurb.html.should.match(/<h3(.*)>new text<\/h3>/);
             done();
         });
     })
@@ -118,7 +118,7 @@ describe("Blurb Model", function(){
 
         blurb.save(function(err, blurb){
             var data_id = blurb._id.toString();
-            blurb.render(false).should.eql("<p>foo</p>");
+            blurb.render(false).should.eql("<p>foo</p>\n");
             done();
         })
     })

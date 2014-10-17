@@ -38,7 +38,7 @@ describe('Routes', function(){
       should(err).be.null;
       res.status.should.eql(200);
       res.body.blurb.text.should.eql("#Heading 1#\n\nThis is text.")
-      res.body.blurb.html.should.eql("<h1>Heading 1</h1>\n\n<p>This is text.</p>");
+      res.body.blurb.html.should.match(/<h1(.*)>Heading 1<\/h1>\n+<p>This is text.<\/p>/);
       done();
     })
   });
@@ -63,7 +63,6 @@ describe('Routes', function(){
     .end(function(err, res){
       res.status.should.eql(200);
       res.body.blurb.text.should.eql('#foo#');
-      res.body.blurb.html.should.eql('<h1>foo</h1>');
       res.body.blurb._id.should.match(/^[\w\d]{24}$/);
       
       Blurb.findOne({_id:res.body.blurb._id}, function(err, blurb){
@@ -89,7 +88,6 @@ describe('Routes', function(){
       res.status.should.eql(200);
       res.body.blurb._id.toString().should.eql(suite.blurb._id.toString());
       res.body.blurb.text.should.eql('#foo#');
-      res.body.blurb.html.should.eql('<h1>foo</h1>');
       
       Blurb.findOne({_id:suite.blurb._id}, function(err, blurb){
         blurb.text.should.eql('#foo#');
