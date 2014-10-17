@@ -127,7 +127,7 @@ describe('Routes', function(){
     request(app)
     .get('/bio')
     .end(function(err, res){
-      res.text.should.match(/\<span data-blurb=/);
+      res.text.should.match(/\<span data-blurb/);
       done();
     });
   })

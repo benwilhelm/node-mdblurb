@@ -65,7 +65,7 @@ blurbSchema.methods.render = function(canEdit){
     
     if (canEdit) {
         var data_blurb = blurb._id ? blurb._id.toString() : 'new';
-        ret += '<span data-blurb="' + blurb._id + '"></span>';
+        ret += '<span data-blurb-id="' + blurb._id + '"></span>';
     }
     
     return ret;
